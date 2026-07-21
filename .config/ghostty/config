@@ -1,0 +1,7 @@
+# Ghostty config
+# Docs: https://ghostty.org/docs/config
+
+background-opacity = 1.0
+background = #050010
+custom-shader-animation = always
+custom-shader = /home/jsabella/.config/ghostty/shaders/starfield.glsl

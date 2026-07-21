@@ -1,0 +1,36 @@
+# yadm tracks $HOME, so ignore broadly and add files explicitly.
+# Untracked files are hidden via status.showUntrackedFiles=no; this is a
+# second layer so a stray `yadm add` of a directory can't sweep in junk.
+
+# Secrets and credentials
+.ssh/
+.gnupg/
+.aws/
+.netrc
+*.pem
+*.key
+!.config/hypr/**/*.key
+
+# Caches, state, runtime
+.cache/
+.local/state/
+.local/share/Trash/
+*.log
+*.swp
+*~
+
+# Application data that is not configuration
+.config/discord/
+.config/mozilla/
+.config/pulse/
+.config/dconf/
+.config/session/
+.config/micro/syntax/
+.mozilla/
+.pki/
+
+# Shell history
+.zsh_history
+.bash_history
+.python_history
+.config/fish/fish_variables

@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+# ~/.local/bin/hyprshade-rofi
+set -euo pipefail
+
+# Shader descriptions
+declare -A SHADER_DESC=(
+    ["_pulse"]="Pulsing effect"
+    ["arctic"]="Icy cold filter with cyan tint"
+    ["autumn"]="Warm fall color palette"
+    ["blue-light-filter"]="Reduces blue light for eye comfort"
+    ["chromatic-split"]="Heavy RGB channel separation"
+    ["comic-book"]="Comic book halftone with ink edges"
+    ["cyberpunk"]="Cyberpunk/neon aesthetic"
+    ["cycle-nord"]="Nord color cycling"
+    ["cycle-tone"]="Tone cycling effect"
+    ["deep-space"]="Deep space dark theme"
+    ["dreamscape"]="Dreamy soft focus with pastel colors"
+    ["duotone"]="Cyan and magenta duotone"
+    ["film-grain"]="Analog film grain effect"
+    ["focus-mode"]="Grayscale focus mode"
+    ["gameboy"]="Classic Game Boy green palette"
+    ["glitch-vhs"]="VHS glitch with color distortion"
+    ["golden-hour"]="Warm sunset/golden hour filter"
+    ["infrared"]="Thermal/infrared vision effect"
+    ["matrix"]="Matrix-style green tint"
+    ["midnight-blue"]="Cool blue filter for late night"
+    ["neon-glow"]="Neon glow with enhanced edges"
+    ["negative"]="Color negative/inversion"
+    ["night-vision"]="Night vision goggles effect"
+    ["noir"]="Black and white noir filter"
+    ["pixelate"]="Pixelation/mosaic effect"
+    ["psychedelic"]="Psychedelic rainbow color cycling"
+    ["retro-crt"]="Retro CRT with scanlines"
+    ["sepia"]="Classic sepia old photograph"
+    ["solarize"]="Solarization/Sabattier effect"
+    ["synthwave"]="Synthwave/outrun aesthetic"
+    ["underwater"]="Underwater caustics effect"
+    ["vaporwave"]="Vaporwave aesthetic"
+    ["vibrance"]="Enhanced color vibrance"
+)
+
+# Get current shader
+CURRENT=$(hyprshade current 2>/dev/null || echo "off")
+[[ -z "$CURRENT" ]] && CURRENT="off"
+
+# Build a clean list of shaders
+mapfile -t SHADERS < <(hyprshade ls |
+  sed -e 's/\r$//' -e 's/^[[:space:]]*//; s/[[:space:]]*$//' -e '/^$/d' |
+  sort -u)
+
+# Build menu with current indicator and descriptions
+MENU=""
+if [[ "$CURRENT" == "off" ]]; then
+    MENU="● off - No shader active\n"
+else
+    MENU="  off - Disable shader\n"
+fi
+
+for shader in "${SHADERS[@]}"; do
+    desc="${SHADER_DESC[$shader]:-No description}"
+    if [[ "$shader" == "$CURRENT" ]]; then
+        MENU+="● $shader - $desc (ACTIVE)\n"
+    else
+        MENU+="  $shader - $desc\n"
+    fi
+done
+
+# Show menu
+choice="$(echo -e "$MENU" | rofi -dmenu -i -p "Hyprshade Filter" \
+    -mesg "Current: $CURRENT" \
+    -theme-str 'window {width: 40%;}' \
+    -no-custom)"
+
+# Extract shader name (remove indicator and description)
+shader_name=$(echo "$choice" | sed 's/^[● ]*//' | sed 's/ - .*//')
+
+# Normalize whitespace
+shader_name="$(printf '%s' "${shader_name:-}" | tr -d '\r' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+
+# If cancelled or off selected
+if [[ -z "$shader_name" || "$shader_name" == "off" ]]; then
+  hyprshade off
+  notify-send "Hyprshade" "Shaders disabled" -t 2000
+  exit 0
+fi
+
+# Apply shader if valid
+if printf '%s\n' "${SHADERS[@]}" | grep -Fxq -- "$shader_name"; then
+  hyprshade on "$shader_name"
+  notify-send "Hyprshade" "Enabled: $shader_name" -t 2000
+  exit 0
+fi
+
+# Fallback
+hyprshade off
+notify-send "Hyprshade" "Invalid selection; shaders disabled" -t 2000
