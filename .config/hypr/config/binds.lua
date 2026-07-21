@@ -1,84 +1,88 @@
-local mainMod = "SUPER"
-local noctCall = "noctalia msg "
-local launchPrefix = "uwsm app -- " -- if you are not using UWSM, make this empty (e.g. "")
+-- Keybindings.
+--
+-- Layout is carried over from the pre-CachyOS config (SUPER+Q terminal,
+-- SUPER+C close, flat workspaces 1-10). Where the original bind called a
+-- tool that is not installed on this machine, it is routed to the noctalia
+-- equivalent instead. Binds with no working equivalent are left commented
+-- out with the package needed to restore them.
+
+local mod   = "SUPER"
+local modS  = "SUPER + SHIFT"
+local modC  = "SUPER + CONTROL"
+local modA  = "SUPER + ALT"
+local modCS = "SUPER + CONTROL + SHIFT"
+
+local noctCall     = "noctalia msg "
+local launchPrefix = "uwsm app -- "
+local terminal     = "ghostty"
+local home         = os.getenv("HOME")
 
 ---------------------------
 ---- WINDOW MANAGEMENT ----
 ---------------------------
 
--- Window manipulation
-hl.bind(mainMod .. " + Escape",      hl.dsp.exec_cmd("hyprctl kill"))
-hl.bind(mainMod .. " + Q",           hl.dsp.window.close())
-hl.bind(mainMod .. " + ALT + Space", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + D",           hl.dsp.window.fullscreen({ mode = 1 }))
-hl.bind(mainMod .. " + F",           hl.dsp.window.fullscreen())
-hl.bind(mainMod .. " + J",           hl.dsp.layout("togglesplit"))
+hl.bind(mod  .. " + Q",      hl.dsp.exec_cmd(launchPrefix .. terminal))
+hl.bind(mod  .. " + C",      hl.dsp.window.close())
+hl.bind(mod  .. " + M",      hl.dsp.exit())
+hl.bind(mod  .. " + E",      hl.dsp.exec_cmd(launchPrefix .. FILE_MANAGER))
+hl.bind(mod  .. " + P",      hl.dsp.window.pin())
+hl.bind(mod  .. " + J",      hl.dsp.layout("togglesplit"))
+hl.bind(mod  .. " + F",      hl.dsp.window.fullscreen())
+hl.bind(modS .. " + F",      hl.dsp.window.float({ action = "toggle" }))
+hl.bind(modC .. " + F",      hl.dsp.window.fullscreen({ mode = "maximized" }))
+hl.bind(mod  .. " + Escape", hl.dsp.exec_cmd("hyprctl kill"))
 
--- Change focus
-hl.bind(mainMod .. " + Left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + Right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + Up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + Down",  hl.dsp.focus({ direction = "down" }))
-hl.bind("ALT + Tab",           hl.dsp.window.cycle_next())
-hl.bind(mainMod .. " + Tab",   hl.dsp.exec_cmd(noctCall .. "window-switcher"))
+-- Focus movement. The original routed left/right through the sidepanels
+-- module; that module is not carried over (it targeted the 32:9 monitor).
+hl.bind(mod .. " + Left",  hl.dsp.focus({ direction = "left"  }))
+hl.bind(mod .. " + Right", hl.dsp.focus({ direction = "right" }))
+hl.bind(mod .. " + Up",    hl.dsp.focus({ direction = "up"    }))
+hl.bind(mod .. " + Down",  hl.dsp.focus({ direction = "down"  }))
 
--- Move active window around workspaces & monitors
-hl.bind(mainMod .. " + SHIFT + Up",                   hl.dsp.window.move({ direction = "u" }))
-hl.bind(mainMod .. " + SHIFT + Right",                hl.dsp.window.move({ direction = "r" }))
-hl.bind(mainMod .. " + SHIFT + Left",                 hl.dsp.window.move({ direction = "l" }))
-hl.bind(mainMod .. " + SHIFT + Down",                 hl.dsp.window.move({ direction = "d" }))
-hl.bind(mainMod .. " + SHIFT + 1",                    hl.dsp.window.move({ monitor = MONITOR1 }))
-hl.bind(mainMod .. " + SHIFT + 2",                    hl.dsp.window.move({ monitor = MONITOR2 }))
-hl.bind(mainMod .. " + SHIFT + 3",                    hl.dsp.window.move({ monitor = MONITOR3 }))
-hl.bind(mainMod .. " + SHIFT + mouse_up",             hl.dsp.window.move({ monitor   = "+1" }))
-hl.bind(mainMod .. " + SHIFT + mouse_down",           hl.dsp.window.move({ monitor   = "-1" }))
-hl.bind(mainMod .. " + CONTROL + SHIFT + Right",      hl.dsp.window.move({ workspace = "r+1" }))
-hl.bind(mainMod .. " + CONTROL + SHIFT + Left",       hl.dsp.window.move({ workspace = "r-1" }))
-hl.bind(mainMod .. " + CONTROL + SHIFT + mouse_up",   hl.dsp.window.move({ workspace = "r+1" }))
-hl.bind(mainMod .. " + CONTROL + SHIFT + mouse_down", hl.dsp.window.move({ workspace = "r-1" }))
-for i = 1, NUM_WPM do
-    local key = i % 10
-    hl.bind(mainMod .. " + SHIFT + CONTROL + " .. key, hl.dsp.window.move({ workspace = "m~" .. i }))
-end
-
--- Move & Resize with mouse
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag())
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize())
+-- Move & resize with mouse
+hl.bind(mod .. " + mouse:272", hl.dsp.window.drag())
+hl.bind(mod .. " + mouse:273", hl.dsp.window.resize())
 
 ------------------
 ---- LAUNCHER ----
 ------------------
 
-hl.bind(mainMod .. " + Return",     hl.dsp.exec_cmd(launchPrefix .. TERMINAL))
-hl.bind(mainMod .. " + E",          hl.dsp.exec_cmd(launchPrefix .. FILE_MANAGER))
-hl.bind(mainMod .. " + T",          hl.dsp.exec_cmd(launchPrefix .. EDITOR))
-hl.bind(mainMod .. " + C",          hl.dsp.exec_cmd(launchPrefix .. CALCULATOR))
-hl.bind(mainMod .. " + W",          hl.dsp.exec_cmd(launchPrefix .. BROWSER))
-hl.bind("CONTROL + SHIFT + Escape", hl.dsp.exec_cmd(launchPrefix .. TERMINAL .. " -e btop"))
-hl.bind(mainMod .. " + Z",          hl.dsp.exec_cmd(noctCall .. "settings-toggle"))
-hl.bind(mainMod .. " + X",          hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
-hl.bind(mainMod .. " + Space",      hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
-hl.bind(mainMod .. " + period",     hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher /emo"))
-hl.bind(mainMod .. " + L",          hl.dsp.exec_cmd(noctCall .. "session lock"))
-hl.bind(mainMod .. " + ALT + C",    hl.dsp.exec_cmd(noctCall .. "panel-toggle session"))
+-- Original used hyprlauncher / rofi -show drun; both absent, so these go to
+-- the noctalia launcher.
+hl.bind(mod .. " + R",     hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
+hl.bind(mod .. " + Space", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
+hl.bind(mod .. " + Slash", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
+
+-- Original: rofi -show window
+hl.bind("ALT + Tab", hl.dsp.exec_cmd(noctCall .. "window-switcher"))
+
+-- Original: hyprlock
+hl.bind(mod .. " + L", hl.dsp.exec_cmd(noctCall .. "session lock"))
+
+-- Original: alacritty -e pulsemixer
+hl.bind(mod .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
+
+-- Edit this config
+hl.bind(modS .. " + H", hl.dsp.exec_cmd(terminal .. " -e micro " .. home .. "/.config/hypr/config/binds.lua"))
+
+hl.bind("CONTROL + SHIFT + Escape", hl.dsp.exec_cmd(launchPrefix .. terminal .. " -e btop"))
+hl.bind(modS .. " + B",             hl.dsp.exec_cmd(launchPrefix .. BROWSER))
 
 ---------------------------
 ---- HARDWARE CONTROLS ----
 ---------------------------
 
--- Audio
+-- Original used pamixer / playerctl / adjust_brightness; none installed.
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(noctCall .. "volume-up"),   { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(noctCall .. "volume-down"), { locked = true, repeating = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd(noctCall .. "volume-mute"), { locked = true })
 hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd(noctCall .. "mic-mute"),    { locked = true })
 
--- Media
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd(noctCall .. "media toggle"),   { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd(noctCall .. "media toggle"),   { locked = true })
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd(noctCall .. "media next"),     { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd(noctCall .. "media previous"), { locked = true })
 
--- Brightness
 hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd(noctCall .. "brightness-up"),   { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(noctCall .. "brightness-down"), { locked = true, repeating = true })
 
@@ -86,52 +90,62 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(noctCall .. "brightness-down"),
 ---- UTILITIES ----
 -------------------
 
--- Screen Capture
-hl.bind(mainMod .. " + P",     hl.dsp.exec_cmd("hyprpicker -a"))
-hl.bind("Print",               hl.dsp.exec_cmd(noctCall .. "screenshot-region"))
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(noctCall .. "screenshot-fullscreen"))
+-- Screenshots. Original used hyprshot; routed to noctalia, keeping the
+-- original key layout (plain Print = region, SUPER+Print = window/output).
+hl.bind("Print",             hl.dsp.exec_cmd(noctCall .. "screenshot-region"))
+hl.bind(mod   .. " + Print", hl.dsp.exec_cmd(noctCall .. "screenshot-fullscreen"))
+hl.bind(modS  .. " + Print", hl.dsp.exec_cmd(noctCall .. "screenshot-region"))
+hl.bind(modCS .. " + Print", hl.dsp.exec_cmd(noctCall .. "screenshot-fullscreen"))
 
--- Theming and Wallpaper
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(noctCall .. "panel-toggle wallpaper"))
-
--- Clipboard
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle clipboard"))
-
--- Notifications
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center notifications"))
+hl.bind(mod  .. " + BackSlash", hl.dsp.exec_cmd("hyprpicker -a"))
+hl.bind(modS .. " + W",         hl.dsp.exec_cmd(noctCall .. "panel-toggle wallpaper"))
+hl.bind(modA .. " + S",         hl.dsp.exec_cmd(home .. "/.local/bin/hyprshade-rofi"))
 
 -------------------------------
 ---- WORKSPACES & MONITORS ----
 -------------------------------
 
--- Focus on monitors
-hl.bind(mainMod .. " + 1", hl.dsp.focus({ monitor = MONITOR1 }))
-hl.bind(mainMod .. " + 2", hl.dsp.focus({ monitor = MONITOR2 }))
-hl.bind(mainMod .. " + 3", hl.dsp.focus({ monitor = MONITOR3 }))
-
--- Focus on workspace number
--- Absolute
-for i = 1, NUM_WPM do
+-- Flat workspaces 1-10, as in the original config.
+for i = 1, 10 do
     local key = i % 10
-    hl.bind(mainMod .. " + TAB + " .. key, hl.dsp.focus({ workspace = i }))
-end
--- Relative
-for i = 1, NUM_WPM do
-    local key = i % 10
-    hl.bind(mainMod .. " + CONTROL + " .. key, hl.dsp.focus({ workspace = "m~" .. i }))
+    hl.bind(mod  .. " + " .. key, hl.dsp.focus({ workspace = i }))
+    hl.bind(modS .. " + " .. key, hl.dsp.window.move({ workspace = i, silent = true }))
 end
 
--- Move to adjacent workspaces and next empty on a given monitor
-hl.bind(mainMod .. " + CONTROL + Right",       hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + CONTROL + Left",        hl.dsp.focus({ workspace = "m-1" }))
-hl.bind(mainMod .. " + CONTROL + Down",        hl.dsp.focus({ workspace = "emptym" }))
-
--- Scroll through existing workspaces & monitors
-hl.bind(mainMod .. " + mouse_down",           hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + mouse_up",             hl.dsp.focus({ workspace = "m-1" }))
-hl.bind(mainMod .. " + CONTROL + mouse_up",   hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + CONTROL + mouse_down", hl.dsp.focus({ workspace = "m-1" }))
+hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- Special workspace (scratchpad)
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special" }))
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special())
+hl.bind(mod  .. " + S", hl.dsp.workspace.toggle_special("first"))
+hl.bind(modS .. " + S", hl.dsp.window.move({ workspace = "special:first", silent = true }))
+
+-----------------------------------------------------------------------
+-- Disabled: the tool these called is not installed on this machine.
+-- Install the noted package, then uncomment.
+-----------------------------------------------------------------------
+
+-- pyprland (pypr): scratchpads and zoom
+-- hl.bind(modS .. " + BackSlash", hl.dsp.exec_cmd("pypr toggle term"))
+-- hl.bind(modS .. " + T",         hl.dsp.exec_cmd("pypr toggle tron"))
+-- hl.bind(modS .. " + S",         hl.dsp.exec_cmd("pypr toggle spotify"))
+-- hl.bind(mod  .. " + Z",         hl.dsp.exec_cmd("pypr zoom"))
+-- hl.bind(mod  .. " + equal",     hl.dsp.exec_cmd("pypr zoom ++"))
+-- hl.bind(mod  .. " + minus",     hl.dsp.exec_cmd("pypr zoom --"))
+
+-- hyprexpo plugin (hyprland-plugins): workspace overview
+-- hl.bind(mod .. " + Tab", hl.dsp.global("hyprexpo:expo", "toggle"))
+
+-- scrcpy + start_scrcpy script: phone mirroring
+-- hl.bind(modS .. " + P", hl.dsp.exec_cmd(home .. "/.local/bin/start_scrcpy"))
+
+-- wf-recorder is installed but the hypr-record-select script was not carried
+-- over; restore it from the old repo to re-enable region/window recording.
+-- hl.bind(modC .. " + Print", hl.dsp.exec_cmd(home .. "/.local/bin/hypr-record-select"))
+
+-- These called scripts that were referenced by the old config but never
+-- committed to the old repo, so there is nothing to restore from:
+--   SUPER+A / SUPER+SHIFT+A  ani-tui
+--   SUPER+SHIFT+D            devenv_select
+--   SUPER+CTRL+W             generate-wallpaper
+--   SUPER+SHIFT+E            hypr-suppress-errors
+--   SUPER+CTRL+E             hypr-enable-errors
