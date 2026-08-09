@@ -23,7 +23,7 @@ local home         = os.getenv("HOME")
 
 hl.bind(mod  .. " + Q",      hl.dsp.exec_cmd(launchPrefix .. terminal))
 hl.bind(mod  .. " + C",      hl.dsp.window.close())
-hl.bind(mod  .. " + M",      hl.dsp.exit())
+hl.bind(mod  .. " + M",      hl.dsp.exec_cmd(noctCall .. "mic-mute"))
 hl.bind(mod  .. " + E",      hl.dsp.exec_cmd(launchPrefix .. FILE_MANAGER))
 hl.bind(mod  .. " + P",      hl.dsp.window.pin())
 hl.bind(mod  .. " + J",      hl.dsp.layout("togglesplit"))
@@ -56,11 +56,23 @@ hl.bind(mod .. " + Slash", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
 -- Original: rofi -show window
 hl.bind("ALT + Tab", hl.dsp.exec_cmd(noctCall .. "window-switcher"))
 
+-------------
+---- IRC ----
+-------------
+
+-- Chat panel from the jsabella/irc plugin. SUPER+SHIFT+I jumps to the launcher's
+-- channel picker instead, for going straight to a specific channel.
+hl.bind(mod  .. " + I", hl.dsp.exec_cmd(noctCall .. "panel-toggle jsabella/irc:panel"))
+hl.bind(modS .. " + I", hl.dsp.exec_cmd(noctCall .. "panel-open launcher /irc "))
+
 -- Original: hyprlock
 hl.bind(mod .. " + L", hl.dsp.exec_cmd(noctCall .. "session lock"))
 
--- Original: alacritty -e pulsemixer
-hl.bind(mod .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
+-- SUPER+V = universal paste (types clipboard into focused window). Was the
+-- noctalia control-center; that's still on the volume keys / SUPER+SHIFT+V area.
+hl.bind(mod .. " + V", hl.dsp.exec_cmd(home .. "/.local/bin/paste-type"))
+-- Control-center moved to SUPER+SHIFT+V so it's still reachable.
+hl.bind(modS .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
 
 -- Edit this config
 hl.bind(modS .. " + H", hl.dsp.exec_cmd(terminal .. " -e micro " .. home .. "/.config/hypr/config/binds.lua"))
@@ -101,6 +113,12 @@ hl.bind(mod  .. " + BackSlash", hl.dsp.exec_cmd("hyprpicker -a"))
 hl.bind(modS .. " + W",         hl.dsp.exec_cmd(noctCall .. "panel-toggle wallpaper"))
 hl.bind(modA .. " + S",         hl.dsp.exec_cmd(home .. "/.local/bin/hyprshade-rofi"))
 
+-- Phone mirroring (scrcpy), mirroring the i3 binds. SUPER+SHIFT+W is the
+-- noctalia wallpaper panel here, so scrcpy-mask moves to SUPER+ALT+W.
+hl.bind(modS .. " + P", hl.dsp.exec_cmd(home .. "/.local/bin/mirror-phone"))
+hl.bind(modC .. " + P", hl.dsp.exec_cmd(home .. "/.local/bin/mirror-phone wifi"))
+hl.bind(modA .. " + W", hl.dsp.exec_cmd(home .. "/.local/bin/scrcpy-mask"))
+
 -------------------------------
 ---- WORKSPACES & MONITORS ----
 -------------------------------
@@ -135,9 +153,19 @@ hl.bind(modS .. " + S", hl.dsp.window.move({ workspace = "special:first", silent
 -- hyprexpo plugin (hyprland-plugins): workspace overview
 -- hl.bind(mod .. " + Tab", hl.dsp.global("hyprexpo:expo", "toggle"))
 
--- scrcpy + start_scrcpy script: phone mirroring
--- hl.bind(modS .. " + P", hl.dsp.exec_cmd(home .. "/.local/bin/start_scrcpy"))
-
 -- wf-recorder is installed but the hypr-record-select script was not carried
 -- over; restore it from the old repo to re-enable region/window recording.
 -- hl.bind(modC .. " + Print", hl.dsp.exec_cmd(home .. "/.local/bin/hypr-record-select"))
+
+-------------------
+---- CROPCAST -----
+-------------------
+
+local cropcast = home .. "/.local/bin/cropcast"
+
+hl.bind(modC  .. " + S", hl.dsp.exec_cmd(cropcast .. " start"))
+hl.bind(modCS .. " + S", hl.dsp.exec_cmd(cropcast .. " adjust 16:9"))
+
+-- Crop straight to the focused window, no picker. Captures the screen and
+-- tracks the window's rectangle, so the crop follows it as it moves or resizes.
+hl.bind(modC  .. " + W", hl.dsp.exec_cmd(cropcast .. " start --restore --active-window"))

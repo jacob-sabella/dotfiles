@@ -1,8 +1,5 @@
 -- Window rules wiki https://wiki.hypr.land/Configuring/Basics/Window-Rules/
 
--- Generic floating position
-hl.window_rule({ match = { float = true }, center = true })
-
 -- Picture-in-Picture
 hl.window_rule({
     match             = { title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$" },
@@ -78,6 +75,9 @@ local floatApps = {
     { class = "^(kvantummanager|qt[56]ct|nwg-look)$" },
     { class = "^(org.pulseaudio.pavucontrol|blueman-manager|nm-applet|nm-connection-editor)$" },
     { title = "^(Winetricks.*|Protontricks.*)$" },
+    -- Phone mirroring: tiling squishes the phone's aspect ratio. Covers both
+    -- scrcpy (SDL, app_id "scrcpy") and scrcpy-mask (Tauri, reverse-DNS id).
+    { class = "(?i)^(com\\.akichase\\.)?scrcpy(-mask)?$" },
 }
 for _, m in ipairs(floatApps) do hl.window_rule({ match = m, float = true }) end
 
@@ -112,4 +112,20 @@ hl.window_rule({
         pin        = false,
     },
     no_focus = true,
+})
+
+-- cropcast: the cropped stream window that Discord shares. The surface is
+-- captured at its on-screen size, so this size rule is what pins the shared
+-- feed to 1080p -- shrinking the window lowers what viewers receive.
+-- Parked on workspace 11 so a whole-desktop capture never contains the preview
+-- itself. "silent" keeps focus put when it opens.
+hl.window_rule({
+    name              = "cropcast",
+    match             = { class = "^(cropcast)$" },
+    workspace         = "11 silent",
+    float             = true,
+    size              = { 1920, 1080 },
+    center            = true,
+    decorate          = false,
+    keep_aspect_ratio = true,
 })
