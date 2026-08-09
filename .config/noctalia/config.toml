@@ -4,7 +4,7 @@ ui_scale = 1.20
 [bar.default]
 center = [ "workspaces", "spacer_1", "active_window" ]
 concave_edge_corners = true
-end = [ "media", "spacer_1", "tray", "notifications", "network", "volume", "session" ]
+end = [ "media", "spacer_1", "jsabella/irc:irc", "tray", "notifications", "network", "volume", "volume_mic", "session" ]
 margin_edge = 0
 margin_ends = 0
 radius_bottom_left = 12
@@ -83,6 +83,19 @@ mode = "dark"
 source = "wallpaper"
 wallpaper_scheme = "m3-tonal-spot"
 
+[wallpaper]
+directory = "/home/jsabella/Pictures/wallpapers"
+enabled = true
+fill_mode = "crop"
+transition = [ "fade", "wipe", "disc", "zoom" ]
+transition_duration = 1500.0
+
+    [wallpaper.automation]
+    enabled = true
+    interval_seconds = 1800
+    order = "random"
+    recursive = true
+
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "kcolorscheme", "kitty", "qt", "alacritty" ]
 
@@ -130,10 +143,17 @@ capsule_fill = "on_secondary"
 [widget.volume]
 color = "secondary"
 
+[widget.volume_mic]
+type = "volume"
+device = "input"
+color = "secondary"
+mute_color = "error"
+show_label = false
+
 [widget.workspaces]
 active_pill_size = 2.5
 capsule = true
 capsule_fill = "on_primary"
-display = "none"
+display = "id"
 inactive_pill_size = 1.0
 pill_scale = 0.80

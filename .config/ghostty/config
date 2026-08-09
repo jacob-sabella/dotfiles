@@ -1,7 +1,34 @@
-# Ghostty config
-# Docs: https://ghostty.org/docs/config
+# Ghostty config — Synthwave/Tron palette for the i3 rice.
+# NOTE: this file is shared with your Hyprland session too. It previously used
+# `theme = noctalia`; if Noctalia re-syncs its theme it may overwrite this.
 
-background-opacity = 1.0
-background = #050010
-custom-shader-animation = always
-custom-shader = /home/jsabella/.config/ghostty/shaders/starfield.glsl
+background = #0b0118
+background-opacity = 0.9
+foreground = #f2eefc
+cursor-color = #01ccff
+selection-background = #ff2a6d
+selection-foreground = #0b0118
+
+# cubes.glsl shader removed — it rendered green and clashed with synthwave.
+# Re-add a synthwave-tinted shader here later if you want animated bg.
+# custom-shader-animation = always
+# custom-shader = /home/jsabella/.config/ghostty/shaders/cubes.glsl
+
+# Synthwave '84 palette (cyan #01ccff = the rig accent)
+palette = 0=#241b2f
+palette = 1=#fe4450
+palette = 2=#72f1b8
+palette = 3=#fede5d
+palette = 4=#03edf9
+palette = 5=#ff7edb
+palette = 6=#01ccff
+palette = 7=#d9d5e0
+palette = 8=#495495
+palette = 9=#fe4450
+palette = 10=#72f1b8
+palette = 11=#fede5d
+palette = 12=#03edf9
+palette = 13=#ff7edb
+palette = 14=#01ccff
+palette = 15=#ffffff
+theme = noctalia
