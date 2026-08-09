@@ -7,8 +7,10 @@ EDITOR       = "gnome-text-editor --new-window"
 CALCULATOR   = "gnome-calculator"
 
 -- Monitors
-MONITOR1 = ""
-MONITOR2 = ""
+-- NOTE: never leave these as "" -- an empty output name is Hyprland's wildcard
+-- rule and applies to EVERY connected output.
+MONITOR1 = "desc:Samsung Electric Company Odyssey G95NC HNTX300255"
+MONITOR2 = "HDMI-A-1" -- TuTuLink remote HDMI extender -> TV
 MONITOR3 = ""
 PRIMARY_MONITOR = MONITOR1
 

@@ -12,7 +12,7 @@ hl.config({
         vrr = 3,
     },
     xwayland = {
-        force_zero_scaling = true
+        force_zero_scaling = false
     },
     ecosystem = {
         no_update_news = true,
